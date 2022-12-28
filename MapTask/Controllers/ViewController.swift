@@ -39,6 +39,8 @@ class ViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    private var annotationsArray = [MKPointAnnotation]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,6 +49,7 @@ class ViewController: UIViewController {
         setupDelegates()
         setConstraints()
         mapCentering()
+        addGestureRecognizers()
     }
 
     private func setupViews() {
@@ -66,12 +69,27 @@ class ViewController: UIViewController {
                                         latitudinalMeters: regionRadius,
                                         longitudinalMeters: regionRadius)
         mapView.setRegion(region, animated: true)
-        
-        
+    }
+    
+    private func addGestureRecognizers() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(foundTap(_:)))
+        tapGestureRecognizer.delegate = self
+        mapView.addGestureRecognizer(tapGestureRecognizer)
     }
     
     @objc func resetButtonTapped() {
         print("resetButtonTapped")
+    }
+    
+    @objc func foundTap(_ recognizer: UITapGestureRecognizer) {
+        print("foundTap")
+        let point = recognizer.location(in: mapView)
+        let tapPoint = mapView.convert(point, toCoordinateFrom: view)
+        let placemark = MKPointAnnotation()
+        placemark.coordinate = tapPoint
+        mapView.addAnnotation(placemark)
+        annotationsArray.append(placemark)
+        mapView.showAnnotations(annotationsArray, animated: true)
     }
 
 }
@@ -95,6 +113,13 @@ extension ViewController {
             squareLabel.trailingAnchor.constraint(equalTo: resetButton.leadingAnchor, constant: -20),
             squareLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
+    }
+}
+
+// MARK: - UIGestureRecognizerDelegate
+extension ViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return !(touch.view is MKMarkerAnnotationView)
     }
 }
 
