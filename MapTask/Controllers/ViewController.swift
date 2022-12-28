@@ -90,6 +90,7 @@ class ViewController: UIViewController {
         let placemark = MKPointAnnotation()
         placemark.coordinate = tapPoint
         mapView.addAnnotation(placemark)
+//        mapView.addOverlay(placemark as? MKOverlay)
         annotationsArray.append(placemark)
     }
 
@@ -126,6 +127,14 @@ extension ViewController: UIGestureRecognizerDelegate {
 
 // MARK: - MKMapViewDelegate
 extension ViewController: MKMapViewDelegate {
-  
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if overlay.isKind(of: MKPolygon.self) {
+            var poligonRenderer = MKPolygonRenderer(overlay: overlay)
+            poligonRenderer.fillColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
+            poligonRenderer.strokeColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 0.5990790563)
+            poligonRenderer.lineWidth = 2
+        }
+        return MKOverlayRenderer(overlay: overlay)
+    }
 }
 
