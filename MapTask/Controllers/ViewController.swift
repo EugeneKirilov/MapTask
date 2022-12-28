@@ -129,10 +129,10 @@ extension ViewController: UIGestureRecognizerDelegate {
 extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if overlay.isKind(of: MKPolygon.self) {
-            var poligonRenderer = MKPolygonRenderer(overlay: overlay)
-            poligonRenderer.fillColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
-            poligonRenderer.strokeColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 0.5990790563)
-            poligonRenderer.lineWidth = 2
+            var polygonRenderer = MKPolygonRenderer(overlay: overlay)
+            polygonRenderer.fillColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
+            polygonRenderer.strokeColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 0.5990790563)
+            polygonRenderer.lineWidth = 2
         }
         return MKOverlayRenderer(overlay: overlay)
     }
