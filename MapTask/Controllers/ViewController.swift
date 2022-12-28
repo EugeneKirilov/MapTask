@@ -19,9 +19,13 @@ class ViewController: UIViewController {
     
     private let squareLabel: UILabel = {
        let label = UILabel()
-        label.font = .systemFont(ofSize: 18)
+        label.text = "0.00 m2"
         label.textColor = .white
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 20)
+        label.adjustsFontSizeToFitWidth = true
         label.layer.cornerRadius = 20
+        label.clipsToBounds = true
         label.backgroundColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -69,15 +73,15 @@ extension ViewController {
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             
-            squareLabel.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 20),
-            squareLabel.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
-            squareLabel.widthAnchor.constraint(equalToConstant: 100),
-            squareLabel.heightAnchor.constraint(equalToConstant: 50),
-            
             resetButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -20),
             resetButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
             resetButton.widthAnchor.constraint(equalToConstant: 100),
-            resetButton.heightAnchor.constraint(equalToConstant: 50)
+            resetButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            squareLabel.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 20),
+            squareLabel.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
+            squareLabel.trailingAnchor.constraint(equalTo: resetButton.leadingAnchor, constant: -20),
+            squareLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }
