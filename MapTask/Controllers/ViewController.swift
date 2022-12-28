@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     
     private let mapView: MKMapView = {
        let mapView = MKMapView()
+        mapView.isRotateEnabled = false
+        mapView.mapType = .hybrid
         mapView.translatesAutoresizingMaskIntoConstraints = false
         return mapView
     }()
@@ -89,7 +91,6 @@ class ViewController: UIViewController {
         placemark.coordinate = tapPoint
         mapView.addAnnotation(placemark)
         annotationsArray.append(placemark)
-        mapView.showAnnotations(annotationsArray, animated: true)
     }
 
 }
