@@ -31,7 +31,7 @@ class ViewController: UIViewController {
         let button = UIButton()
         button.setImage(UIImage(named: "Reset"), for: .normal)
         button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
-        button.isHidden = true
+//        button.isHidden = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
