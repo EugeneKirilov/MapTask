@@ -43,6 +43,7 @@ class ViewController: UIViewController {
     }()
     
     private var annotationsArray = [MKPointAnnotation]()
+    private var points = [CLLocationCoordinate2D]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,14 +85,18 @@ class ViewController: UIViewController {
     }
     
     @objc func foundTap(_ recognizer: UITapGestureRecognizer) {
-        print("foundTap")
+        mapView.removeOverlays(mapView.overlays)
         let point = recognizer.location(in: mapView)
         let tapPoint = mapView.convert(point, toCoordinateFrom: view)
         let placemark = MKPointAnnotation()
         placemark.coordinate = tapPoint
-        mapView.addAnnotation(placemark)
-//        mapView.addOverlay(placemark as? MKOverlay)
         annotationsArray.append(placemark)
+        points.append(tapPoint)
+        
+        let polygon = MKPolygon(coordinates: &points, count: points.count)
+        
+        mapView.addAnnotation(placemark)
+        mapView.addOverlay(polygon)
     }
 
 }
@@ -128,11 +133,13 @@ extension ViewController: UIGestureRecognizerDelegate {
 // MARK: - MKMapViewDelegate
 extension ViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if overlay.isKind(of: MKPolygon.self) {
-            var polygonRenderer = MKPolygonRenderer(overlay: overlay)
+        if overlay is MKPolygon {
+            let polygonRenderer = MKPolygonRenderer(overlay: overlay)
             polygonRenderer.fillColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
-            polygonRenderer.strokeColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 0.5990790563)
+            polygonRenderer.strokeColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
+            polygonRenderer.alpha = 0.7
             polygonRenderer.lineWidth = 2
+            return polygonRenderer
         }
         return MKOverlayRenderer(overlay: overlay)
     }
