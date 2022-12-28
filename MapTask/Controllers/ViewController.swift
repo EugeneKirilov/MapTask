@@ -46,6 +46,7 @@ class ViewController: UIViewController {
         setupViews()
         setupDelegates()
         setConstraints()
+        mapCentering()
     }
 
     private func setupViews() {
@@ -55,6 +56,17 @@ class ViewController: UIViewController {
     }
     
     private func setupDelegates() {
+        mapView.delegate = self
+    }
+    
+    private func mapCentering() {
+        let minsk = CLLocation(latitude: 53.901635, longitude: 27.548736)
+        let regionRadius: CLLocationDistance = 692000.0
+        let region = MKCoordinateRegion(center: minsk.coordinate,
+                                        latitudinalMeters: regionRadius,
+                                        longitudinalMeters: regionRadius)
+        mapView.setRegion(region, animated: true)
+        
         
     }
     
@@ -64,7 +76,7 @@ class ViewController: UIViewController {
 
 }
 
-//MARK: - SetConstraints
+// MARK: - SetConstraints
 extension ViewController {
     private func setConstraints() {
         NSLayoutConstraint.activate([
@@ -84,5 +96,10 @@ extension ViewController {
             squareLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
+}
+
+// MARK: - MKMapViewDelegate
+extension ViewController: MKMapViewDelegate {
+  
 }
 
