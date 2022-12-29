@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
     private let mapView: MKMapView = {
        let mapView = MKMapView()
@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     
     private let squareLabel: UILabel = {
        let label = UILabel()
-        label.text = "0.00 m2"
+        label.text = "0.0 m2"
         label.textColor = .white
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 20)
@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         let button = UIButton()
         button.setImage(UIImage(named: "Reset"), for: .normal)
         button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
-//        button.isHidden = true
+        button.isHidden = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -53,6 +53,11 @@ class ViewController: UIViewController {
         setConstraints()
         mapCentering()
         addGestureRecognizers()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        startAlert()
     }
 
     private func setupViews() {
@@ -71,6 +76,7 @@ class ViewController: UIViewController {
         let region = MKCoordinateRegion(center: minsk.coordinate,
                                         latitudinalMeters: regionRadius,
                                         longitudinalMeters: regionRadius)
+        
         mapView.setRegion(region, animated: true)
     }
     
@@ -81,7 +87,22 @@ class ViewController: UIViewController {
     }
     
     @objc func resetButtonTapped() {
-        print("resetButtonTapped")
+        if !annotationsArray.isEmpty && !points.isEmpty {
+            annotationsArray.removeLast()
+            points.removeLast()
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.addAnnotations(annotationsArray)
+            
+            let polygon = MKPolygon(coordinates: &points, count: points.count)
+            mapView.removeOverlays(mapView.overlays)
+            mapView.addOverlay(polygon)
+            
+            squareLabel.text = "\(regionArea(locations: points)) m2"
+            
+            if annotationsArray.count == 0 {
+                resetButton.isHidden = true
+            }
+        }
     }
     
     @objc func foundTap(_ recognizer: UITapGestureRecognizer) {
@@ -95,10 +116,15 @@ class ViewController: UIViewController {
         
         let polygon = MKPolygon(coordinates: &points, count: points.count)
         
-        mapView.addAnnotation(placemark)
+        if annotationsArray.count > 0 {
+            resetButton.isHidden = false
+        }
+        
+        squareLabel.text = "\(regionArea(locations: points)) m2"
+        
+        mapView.addAnnotations(annotationsArray)
         mapView.addOverlay(polygon)
     }
-
 }
 
 // MARK: - SetConstraints
@@ -142,6 +168,32 @@ extension ViewController: MKMapViewDelegate {
             return polygonRenderer
         }
         return MKOverlayRenderer(overlay: overlay)
+    }
+}
+
+// MARK: - Polygon square calculation
+private extension ViewController {
+    func radians(degrees: Double) -> Double {
+        return degrees * .pi / 180
+    }
+
+    func regionArea(locations: [CLLocationCoordinate2D]) -> Double {
+        let kEarthRadius = 6378137.0
+        
+        guard locations.count > 2 else { return 0 }
+        
+        var area = 0.0
+
+        for i in 0..<locations.count {
+            let p1 = locations[i > 0 ? i - 1 : locations.count - 1]
+            let p2 = locations[i]
+
+            area += radians(degrees: p2.longitude - p1.longitude) * (2 + sin(radians(degrees: p1.latitude)) + sin(radians(degrees: p2.latitude)) )
+        }
+        
+        area = -(area * kEarthRadius * kEarthRadius / 2)
+        
+        return max(area, -area) // In order not to worry about is polygon clockwise or counterclockwise defined.
     }
 }
 
