@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
     private let mapView: MKMapView = {
        let mapView = MKMapView()
@@ -76,6 +76,7 @@ class ViewController: UIViewController {
         let region = MKCoordinateRegion(center: minsk.coordinate,
                                         latitudinalMeters: regionRadius,
                                         longitudinalMeters: regionRadius)
+        
         mapView.setRegion(region, animated: true)
     }
     
@@ -191,6 +192,7 @@ private extension ViewController {
         }
         
         area = -(area * kEarthRadius * kEarthRadius / 2)
+        
         return max(area, -area) // In order not to worry about is polygon clockwise or counterclockwise defined.
     }
 }
