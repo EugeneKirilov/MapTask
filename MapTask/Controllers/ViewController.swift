@@ -84,7 +84,8 @@ class ViewController: UIViewController {
         if !annotationsArray.isEmpty && !points.isEmpty {
             annotationsArray.removeLast()
             points.removeLast()
-            mapView.removeAnnotation(mapView.annotations.last ?? MKPointAnnotation())
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.addAnnotations(annotationsArray)
             
             let polygon = MKPolygon(coordinates: &points, count: points.count)
             mapView.removeOverlays(mapView.overlays)
@@ -114,7 +115,6 @@ class ViewController: UIViewController {
         mapView.addAnnotations(annotationsArray)
         mapView.addOverlay(polygon)
     }
-
 }
 
 // MARK: - SetConstraints
