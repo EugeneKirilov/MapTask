@@ -54,6 +54,11 @@ class ViewController: UIViewController {
         mapCentering()
         addGestureRecognizers()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        startAlert()
+    }
 
     private func setupViews() {
         view.addSubview(mapView)
