@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E4B55E72295D88B9001DE061 /* UIViewController + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B55E71295D88B9001DE061 /* UIViewController + Extension.swift */; };
 		E4ECEAAA295C5FB500905A08 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ECEAA9295C5FB500905A08 /* AppDelegate.swift */; };
 		E4ECEAAC295C5FB500905A08 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ECEAAB295C5FB500905A08 /* SceneDelegate.swift */; };
 		E4ECEAAE295C5FB500905A08 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4ECEAAD295C5FB500905A08 /* ViewController.swift */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E4B55E71295D88B9001DE061 /* UIViewController + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Extension.swift"; sourceTree = "<group>"; };
 		E4ECEAA6295C5FB500905A08 /* MapTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MapTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4ECEAA9295C5FB500905A08 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E4ECEAAB295C5FB500905A08 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -35,6 +37,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E4B55E6F295D889C001DE061 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E4B55E70295D88A6001DE061 /* UIKit */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E4B55E70295D88A6001DE061 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				E4B55E71295D88B9001DE061 /* UIViewController + Extension.swift */,
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
 		E4BFD2CC295C61AB0056306B /* Application */ = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +101,7 @@
 			children = (
 				E4BFD2CC295C61AB0056306B /* Application */,
 				E4BFD2CE295C62540056306B /* Controllers */,
+				E4B55E6F295D889C001DE061 /* Extensions */,
 				E4BFD2CD295C62210056306B /* Resources */,
 			);
 			path = MapTask;
@@ -160,6 +179,7 @@
 			files = (
 				E4ECEAAE295C5FB500905A08 /* ViewController.swift in Sources */,
 				E4ECEAAA295C5FB500905A08 /* AppDelegate.swift in Sources */,
+				E4B55E72295D88B9001DE061 /* UIViewController + Extension.swift in Sources */,
 				E4ECEAAC295C5FB500905A08 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
