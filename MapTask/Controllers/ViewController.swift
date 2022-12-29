@@ -21,7 +21,7 @@ class ViewController: UIViewController {
     
     private let squareLabel: UILabel = {
        let label = UILabel()
-        label.text = "0.00 m2"
+        label.text = "0.0 m2"
         label.textColor = .white
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 20)
@@ -96,6 +96,8 @@ class ViewController: UIViewController {
             mapView.removeOverlays(mapView.overlays)
             mapView.addOverlay(polygon)
             
+            squareLabel.text = "\(regionArea(locations: points)) m2"
+            
             if annotationsArray.count == 0 {
                 resetButton.isHidden = true
             }
@@ -116,6 +118,8 @@ class ViewController: UIViewController {
         if annotationsArray.count > 0 {
             resetButton.isHidden = false
         }
+        
+        squareLabel.text = "\(regionArea(locations: points)) m2"
         
         mapView.addAnnotations(annotationsArray)
         mapView.addOverlay(polygon)
