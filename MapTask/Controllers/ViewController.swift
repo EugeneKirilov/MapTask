@@ -37,7 +37,7 @@ class ViewController: UIViewController {
         let button = UIButton()
         button.setImage(UIImage(named: "Reset"), for: .normal)
         button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
-//        button.isHidden = true
+        button.isHidden = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -81,7 +81,19 @@ class ViewController: UIViewController {
     }
     
     @objc func resetButtonTapped() {
-        print("resetButtonTapped")
+        if !annotationsArray.isEmpty && !points.isEmpty {
+            annotationsArray.removeLast()
+            points.removeLast()
+            mapView.removeAnnotation(mapView.annotations.last ?? MKPointAnnotation())
+            
+            let polygon = MKPolygon(coordinates: &points, count: points.count)
+            mapView.removeOverlays(mapView.overlays)
+            mapView.addOverlay(polygon)
+            
+            if annotationsArray.count == 0 {
+                resetButton.isHidden = true
+            }
+        }
     }
     
     @objc func foundTap(_ recognizer: UITapGestureRecognizer) {
@@ -95,7 +107,11 @@ class ViewController: UIViewController {
         
         let polygon = MKPolygon(coordinates: &points, count: points.count)
         
-        mapView.addAnnotation(placemark)
+        if annotationsArray.count > 0 {
+            resetButton.isHidden = false
+        }
+        
+        mapView.addAnnotations(annotationsArray)
         mapView.addOverlay(polygon)
     }
 
