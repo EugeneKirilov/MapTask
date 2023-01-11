@@ -21,21 +21,21 @@ final class ViewController: UIViewController {
     
     private let squareLabel: UILabel = {
        let label = UILabel()
-        label.text = "0.0 m2"
+        label.text = StringConstants.startSquareLabelText.rawValue
         label.textColor = .white
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 20)
+        label.font = .systemFont(ofSize: CGFloatConstants.twentyPoints.rawValue)
         label.adjustsFontSizeToFitWidth = true
-        label.layer.cornerRadius = 20
+        label.layer.cornerRadius = CGFloatConstants.twentyPoints.rawValue
         label.clipsToBounds = true
-        label.backgroundColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
+        label.backgroundColor = UIColor(named: StringConstants.veriPeriColor.rawValue)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private lazy var resetButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "Reset"), for: .normal)
+        button.setImage(UIImage(named: StringConstants.resetButton.rawValue), for: .normal)
         button.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
         button.isHidden = true
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -50,9 +50,9 @@ final class ViewController: UIViewController {
         
         setupViews()
         setupDelegates()
-        setConstraints()
         mapCentering()
         addGestureRecognizers()
+        setConstraints()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -71,8 +71,9 @@ final class ViewController: UIViewController {
     }
     
     private func mapCentering() {
-        let minsk = CLLocation(latitude: 53.901635, longitude: 27.548736)
-        let regionRadius: CLLocationDistance = 692000.0
+        let minsk = CLLocation(latitude: DoubleConstants.minskLatitude.rawValue,
+                               longitude: DoubleConstants.minskLongitude.rawValue)
+        let regionRadius: CLLocationDistance = DoubleConstants.regionRadius.rawValue
         let region = MKCoordinateRegion(center: minsk.coordinate,
                                         latitudinalMeters: regionRadius,
                                         longitudinalMeters: regionRadius)
@@ -86,6 +87,25 @@ final class ViewController: UIViewController {
         mapView.addGestureRecognizer(tapGestureRecognizer)
     }
     
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            mapView.topAnchor.constraint(equalTo: view.topAnchor),
+            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            
+            resetButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: CGFloatConstants.minusTwentyPoints.rawValue),
+            resetButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: CGFloatConstants.minusThirtyPoints.rawValue),
+            resetButton.widthAnchor.constraint(equalToConstant: CGFloatConstants.hundredPoints.rawValue),
+            resetButton.heightAnchor.constraint(equalToConstant: CGFloatConstants.fiftyPoints.rawValue),
+            
+            squareLabel.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: CGFloatConstants.twentyPoints.rawValue),
+            squareLabel.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: CGFloatConstants.minusThirtyPoints.rawValue),
+            squareLabel.trailingAnchor.constraint(equalTo: resetButton.leadingAnchor, constant: CGFloatConstants.minusTwentyPoints.rawValue),
+            squareLabel.heightAnchor.constraint(equalToConstant: CGFloatConstants.fiftyPoints.rawValue)
+        ])
+    }
+    
     @objc func resetButtonTapped() {
         if !annotationsArray.isEmpty && !points.isEmpty {
             annotationsArray.removeLast()
@@ -97,7 +117,7 @@ final class ViewController: UIViewController {
             mapView.removeOverlays(mapView.overlays)
             mapView.addOverlay(polygon)
             
-            squareLabel.text = "\(regionArea(locations: points)) m2"
+            squareLabel.text = "\(regionArea(locations: points)) \(StringConstants.squareMeters.rawValue)"
             
             if annotationsArray.count == 0 {
                 resetButton.isHidden = true
@@ -120,80 +140,12 @@ final class ViewController: UIViewController {
             resetButton.isHidden = false
         }
         
-        squareLabel.text = "\(regionArea(locations: points)) m2"
+        squareLabel.text = "\(regionArea(locations: points)) \(StringConstants.squareMeters.rawValue)"
         
         mapView.addAnnotations(annotationsArray)
         mapView.addOverlay(polygon)
     }
 }
 
-// MARK: - SetConstraints
-extension ViewController {
-    private func setConstraints() {
-        NSLayoutConstraint.activate([
-            mapView.topAnchor.constraint(equalTo: view.topAnchor),
-            mapView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            mapView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            
-            resetButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -20),
-            resetButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
-            resetButton.widthAnchor.constraint(equalToConstant: 100),
-            resetButton.heightAnchor.constraint(equalToConstant: 50),
-            
-            squareLabel.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 20),
-            squareLabel.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -30),
-            squareLabel.trailingAnchor.constraint(equalTo: resetButton.leadingAnchor, constant: -20),
-            squareLabel.heightAnchor.constraint(equalToConstant: 50)
-        ])
-    }
-}
 
-// MARK: - UIGestureRecognizerDelegate
-extension ViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        return !(touch.view is MKMarkerAnnotationView)
-    }
-}
-
-// MARK: - MKMapViewDelegate
-extension ViewController: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if overlay is MKPolygon {
-            let polygonRenderer = MKPolygonRenderer(overlay: overlay)
-            polygonRenderer.fillColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
-            polygonRenderer.strokeColor = #colorLiteral(red: 0.5302652121, green: 0.5568788052, blue: 1, alpha: 1)
-            polygonRenderer.alpha = 0.7
-            polygonRenderer.lineWidth = 2
-            return polygonRenderer
-        }
-        return MKOverlayRenderer(overlay: overlay)
-    }
-}
-
-// MARK: - Polygon square calculation
-private extension ViewController {
-    func radians(degrees: Double) -> Double {
-        return degrees * .pi / 180
-    }
-
-    func regionArea(locations: [CLLocationCoordinate2D]) -> Double {
-        let kEarthRadius = 6378137.0
-        
-        guard locations.count > 2 else { return 0 }
-        
-        var area = 0.0
-
-        for i in 0..<locations.count {
-            let p1 = locations[i > 0 ? i - 1 : locations.count - 1]
-            let p2 = locations[i]
-
-            area += radians(degrees: p2.longitude - p1.longitude) * (2 + sin(radians(degrees: p1.latitude)) + sin(radians(degrees: p2.latitude)) )
-        }
-        
-        area = -(area * kEarthRadius * kEarthRadius / 2)
-        
-        return max(area, -area) // In order not to worry about is polygon clockwise or counterclockwise defined.
-    }
-}
 
